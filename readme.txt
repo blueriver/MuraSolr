@@ -1,0 +1,1 @@
+This plugin adds files to default Mura site search.
