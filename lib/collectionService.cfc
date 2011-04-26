@@ -1,9 +1,3 @@
-<cfcomponent output="false" extends="mura.cfobject">
-
-<cfset variables.pluginConfig="">
-<cfset variables.collectionDir="">
-<cfset variables.locHash="">
-<cfset variables.configBean = getBean("configBean") />
 <!---
    Copyright 2011 Blue River Interactive
 
@@ -19,6 +13,12 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 --->
+<cfcomponent output="false" extends="mura.cfobject">
+
+<cfset variables.pluginConfig="">
+<cfset variables.collectionDir="">
+<cfset variables.locHash="">
+<cfset variables.configBean = getBean("configBean") />
 <cfset variables.collectionExtensions="pdf,doc,odt,docx,xls,xlsx">
 <cfset variables.assignedSites="">
 
