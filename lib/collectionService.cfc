@@ -32,7 +32,7 @@
 		<cfset createSiteCollections(variables.assignedSites.siteID)>
 	</cfloop>
 	
-	<cfif not fileExists("#variables.configBean.getPluginDir()#/#arguments.pluginConfig.getDirectory()#/collections")>
+	<cfif not directoryExists("#variables.configBean.getPluginDir()#/#arguments.pluginConfig.getDirectory()#/collections")>
    		<cfdirectory action="create" directory="#variables.configBean.getPluginDir()#/#arguments.pluginConfig.getDirectory()#/collections">
 	</cfif>
 	<cfreturn this>
