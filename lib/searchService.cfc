@@ -120,22 +120,22 @@
 	
 	<cfloop query="rs">
 		<cfquery name="rsScore" dbtype="query">
-			select score from rsDbSearch
+			select score,context from rsDbSearch
 			where contentID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.contentID#">
 		</cfquery>
 		
 		<cfif rsScore.recordcount>
-			<cfset querySetCell(rs,"score",rsScore.score)>
+			<cfset querySetCell(rs,"score",rsScore.score,rs.currentRow)>		
 		</cfif>
 		
 		<cfif len(rs.fileID)>
 			<cfquery name="rsScore" dbtype="query">
-				select score from rsFileSearch
+				select score,context from rsFileSearch
 				where fileID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.fileID#">
 			</cfquery>
 			
 			<cfif rsScore.recordcount>
-				<cfset querySetCell(rs,"score",rsScore.score)>
+				<cfset querySetCell(rs,"score",rsScore.score,rs.currentRow)>
 			</cfif>
 		</cfif>
 	</cfloop>
@@ -368,22 +368,28 @@
 	
 	<cfloop query="rs">
 		<cfquery name="rsScore" dbtype="query">
-			select score from rsDbSearch
+			select score,context from rsDbSearch
 			where contentID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.contentID#">
 		</cfquery>
 		
 		<cfif rsScore.recordcount>
-			<cfset querySetCell(rs,"score",rsScore.score)>
+			<cfset querySetCell(rs,"score",rsScore.score,rs.currentRow)>
+			<cfif len(trim(rsScore.context))>
+				<cfset querySetCell(rs,"summary","<p>" & rsScore.context & "</p>",rs.currentRow)>
+			</cfif>
 		</cfif>
 		
 		<cfif len(rs.fileID)>
 			<cfquery name="rsScore" dbtype="query">
-				select score from rsFileSearch
+				select score,context from rsFileSearch
 				where fileID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#rs.fileID#">
 			</cfquery>
 			
 			<cfif rsScore.recordcount>
-				<cfset querySetCell(rs,"score",rsScore.score)>
+				<cfset querySetCell(rs,"score",rsScore.score,rs.currentRow)>
+				<cfif len(trim(rsScore.context))>
+					<cfset querySetCell(rs,"summary","<p>" & rsScore.context & "</p>",rs.currentRow)>
+				</cfif>
 			</cfif>
 		</cfif>
 	</cfloop>
@@ -401,7 +407,7 @@
 <cfargument name="keywords">
 <cfargument name="siteID">
 
-<cfset var rsResult=queryNew("contentID,score")>
+<cfset var rsResult=queryNew("contentID,score,context")>
 <cfset var rsRaw="">
 
 <cfif len(arguments.keywords)>
@@ -411,6 +417,7 @@
 		<cfset queryAddRow(rsResult,1)/>
 		<cfset querysetcell(rsResult,"contentID",rsRaw.key,rsRaw.currentRow)/>
 		<cfset querysetcell(rsResult,"score",rsRaw.score,rsRaw.currentRow)/>
+		<cfset querysetcell(rsResult,"context",rsRaw.context,rsRaw.currentRow)/>
 	</cfloop>
 </cfif>
 
@@ -420,7 +427,7 @@
 <cffunction name="searchFileCollection" output="false">
 <cfargument name="keywords">
 <cfargument name="siteID">
-<cfset var rsResult=queryNew("fileID,score")>
+<cfset var rsResult=queryNew("fileID,score,context")>
 <cfset var rsRaw="">
 
 <cfif len(arguments.keywords)>
@@ -429,6 +436,7 @@
 		<cfset queryAddRow(rsResult,1)/>
 		<cfset querysetcell(rsResult,"fileID",listLast(listFirst(rsRaw.url,"."),"/"),rsRaw.currentRow)/>
 		<cfset querysetcell(rsResult,"score",rsRaw.score,rsRaw.currentRow)/>
+		<cfset querysetcell(rsResult,"context",rsRaw.context,rsRaw.currentRow)/>
 	</cfloop>
 </cfif>
 

@@ -77,15 +77,10 @@
 	  </cfquery>
 	
 	<cfif rs.recordcount>
-		<cftry>
-		   	<cfindex action="update" collection="#collectionName#" key="contentID" type="custom" query="rs" title="title" body="contentID,type,subtype,siteID,Title,Body,summary,tags,filename,credits" language="#language#"/>
-		<cfcatch>
-			<cfcollection action="delete" collection="#collectionName#" />
-			<cfdump var="#cfcatch#">
-			<cfdump var="#rs#">
-			<cfabort>
-		</cfcatch>
-		</cftry>
+	  	<cfset querySetCell(rs,"body", stripMarkUp(rs.body))>
+	  	<cfset querySetCell(rs,"summary", stripMarkUp(rs.summary))>
+	  	
+	  	<cfindex action="update" collection="#getCollectionName(arguments.siteID,'db')#" key="contentID" type="custom" query="rs" title="title" custom1="summary" custom2="tags" body="body" language="#getCollectionLanguage(arguments.siteID)#"/>
 	</cfif>
 
 </cffunction>
@@ -93,6 +88,7 @@
 <cffunction name="indexDBItem" output="false" returntype="void">
 <cfargument name="contentID">
 <cfargument name="siteID">
+	  <cfset var rs="">
 	   	<!--- now populate the collection with content --->
 	  <cfquery name="rs" datasource="#variables.configBean.getDatasource()#">
 	      SELECT 
@@ -104,9 +100,13 @@
 		  and active = 1
 		  and type in ('Page','Portal','Calenda','Gallery','File','Link')
 	  </cfquery>
-
-	  <cfindex action="update" collection="#getCollectionName(arguments.siteID,'db')#" key="contentID" type="custom" query="rs" title="title" body="contentID,type,subtype,siteID,Title,Body,summary,tags,filename,credits" language="#getCollectionLanguage(arguments.siteID)#"/>
-		
+	  
+	  <cfif rs.recordcount>
+	  	<cfset querySetCell(rs,"body", stripMarkUp(rs.body))>
+	  	<cfset querySetCell(rs,"summary", stripMarkUp(rs.summary))>
+	  	
+	  	<cfindex action="update" collection="#getCollectionName(arguments.siteID,'db')#" key="contentID" type="custom" query="rs" title="title" custom1="summary" custom2="tags" body="body" language="#getCollectionLanguage(arguments.siteID)#"/>
+	  </cfif>
 </cffunction>
 
 <cffunction name="deleteDBItem" output="false" returntype="void">
@@ -237,8 +237,30 @@
 	<cfif not collectionExists(collectionName)>
 		<cfset createCollection(collection=collectionName, path="../collections",language=language)>
 	</cfif>
-	<cfsearch name="rs" collection="#collectionName#" criteria="#arguments.keywords#" language="#language#"> 
+	<cfif arguments.type eq "file">
+		<cfsearch 
+			name="rs" 
+			collection="#collectionName#" 
+			criteria="#arguments.keywords#" 
+			language="#language#"
+			ContextHighlightBegin='<strong>'
+	    	ContextHighlightEnd="</strong>"
+	   		ContextPassages="3"
+	   		contextBytes="300"
+	   		>
+	<cfelse>
+		<cfsearch 
+			name="rs" 
+			collection="#collectionName#" 
+			criteria="title:#arguments.keywords# OR custom1:#arguments.keywords# OR custom2:#arguments.keywords# OR body:#arguments.keywords#" 
+			language="#language#"
+			ContextHighlightBegin='<strong>'
+	    	ContextHighlightEnd="</strong>"
+	   		ContextPassages="3"
+	   		contextBytes="300">
 	
+	</cfif>
+	 
 	 <cfreturn rs>
 </cffunction>
 
@@ -252,4 +274,21 @@
 	<cfargument name="language">
 	<!--- not implemented --->
 </cffunction>
+
+<cffunction name="stripMarkUp" returntype="string" output="false">
+	<cfargument name="str" type="string">	
+	<cfset var body=ReReplace(arguments.str, "<[^>]*>","","all")>
+	<cfset var errorStr="">
+	<cfset var regex1="(\[sava\]|\[mura\]).+?(\[/sava\]|\[/mura\])">
+	<cfset var regex2="">
+	<cfset var finder=reFindNoCase(regex1,body,1,"true")>
+
+	<cfloop condition="#finder.len[1]#">
+		<cfset body=replaceNoCase(body,mid(body, finder.pos[1], finder.len[1]),'')>
+		<cfset finder=reFindNoCase(regex1,body,1,"true")>
+	</cfloop>
+	
+	<cfreturn body />
+</cffunction>
+
 </cfcomponent>
