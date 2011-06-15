@@ -53,7 +53,7 @@
 		<cfset deleteCollection(rs.siteID & "file" & variables.locHash)>
 	</cfloop>
 	
-	<cfif directoryExists("application.configBean.getPluginDir()#/#variables.pluginConfig.getDirectory()#/collections")>
+	<cfif directoryExists("#application.configBean.getPluginDir()#/#variables.pluginConfig.getDirectory()#/collections")>
 		<cfdirectory action="list" directory="#application.configBean.getPluginDir()#/#variables.pluginConfig.getDirectory()#/collections" name="rs" type="Dir">
 		
 		<cfloop query="rs">
