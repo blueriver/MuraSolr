@@ -407,7 +407,7 @@
 <cfargument name="keywords">
 <cfargument name="siteID">
 
-<cfset var rsResult=queryNew("contentID,score,context")>
+<cfset var rsResult=queryNew("contentID,score,context","varchar,decimal,varchar")>
 <cfset var rsRaw="">
 
 <cfif len(arguments.keywords)>
@@ -427,7 +427,7 @@
 <cffunction name="searchFileCollection" output="false">
 <cfargument name="keywords">
 <cfargument name="siteID">
-<cfset var rsResult=queryNew("fileID,score,context")>
+<cfset var rsResult=queryNew("fileID,score,context","varchar,decimal,varchar")>
 <cfset var rsRaw="">
 
 <cfif len(arguments.keywords)>

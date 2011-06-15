@@ -53,21 +53,23 @@
 		<cfset deleteCollection(rs.siteID & "file" & variables.locHash)>
 	</cfloop>
 	
-	<cfdirectory action="list" directory="#application.configBean.getPluginDir()#/#variables.pluginConfig.getDirectory()#/collections" name="rs" type="Dir">
-	
-	<cfloop query="rs">
-		<cfif collectionExists(rs.name)>
-			<cfset deleteCollection(rs.name)>
-		<cfelseif left(rs.name,2) eq "CF" and len(rs.name) gt 3>
-			<cfset temp=right(rs.name,len(rs.name)-2)>
-			<cfset temp=left(temp,len(temp)-1)>
-			<cfif collectionExists(temp)>
-				<cfset deleteCollection(temp)>
-			<cfelseif directoryExists("#rs.directory#/#rs.name#")>
-				<cfdirectory action="delete" directory="#rs.directory#/#rs.name#">
+	<cfif directoryExists("application.configBean.getPluginDir()#/#variables.pluginConfig.getDirectory()#/collections")>
+		<cfdirectory action="list" directory="#application.configBean.getPluginDir()#/#variables.pluginConfig.getDirectory()#/collections" name="rs" type="Dir">
+		
+		<cfloop query="rs">
+			<cfif collectionExists(rs.name)>
+				<cfset deleteCollection(rs.name)>
+			<cfelseif left(rs.name,2) eq "CF" and len(rs.name) gt 3>
+				<cfset temp=right(rs.name,len(rs.name)-2)>
+				<cfset temp=left(temp,len(temp)-1)>
+				<cfif collectionExists(temp)>
+					<cfset deleteCollection(temp)>
+				<cfelseif directoryExists("#rs.directory#/#rs.name#")>
+					<cfdirectory action="delete" directory="#rs.directory#/#rs.name#">
+				</cfif>
 			</cfif>
-		</cfif>
-	</cfloop>
+		</cfloop>
+	</cfif>
 </cffunction>
 
 <cffunction name="collectionExists" access="private" output="false" returntype="boolean">

@@ -21,6 +21,7 @@
 <cfset variables.configBean = getBean("configBean") />
 <cfset variables.collectionExtensions="pdf,doc,odt,docx,xls,xlsx">
 <cfset variables.assignedSites="">
+<cfset variables.assignedSites="">
 
 <cffunction name="init" output="false">
 <cfargument name="pluginConfig">
@@ -28,13 +29,15 @@
 	<cfset variables.pluginConfig=arguments.pluginConfig>
 	<cfset variables.assignedSites=variables.pluginConfig.getAssignedSites()>
 	
+	<cfset variables.collectionDir="#variables.configBean.getPluginDir()#/#arguments.pluginConfig.getDirectory()#/collections">
+
+	<cfif not directoryExists(variables.collectionDir)>
+   		<cfdirectory action="create" directory="#variables.collectionDir#">
+	</cfif>
+	
 	<cfloop query="variables.assignedSites">
 		<cfset createSiteCollections(variables.assignedSites.siteID)>
 	</cfloop>
-	
-	<cfif not directoryExists("#variables.configBean.getPluginDir()#/#arguments.pluginConfig.getDirectory()#/collections")>
-   		<cfdirectory action="create" directory="#variables.configBean.getPluginDir()#/#arguments.pluginConfig.getDirectory()#/collections">
-	</cfif>
 	<cfreturn this>
 </cffunction>
 
@@ -63,7 +66,7 @@
 	<cfset var language=getCollectionLanguage(arguments.siteID)>
 	
 	<cfset deleteCollection(collectionName)>
-	<cfset createCollection(collection=collectionName, path="../collections",language=language)>
+	<cfset createCollection(collection=collectionName, language=language)>
 	   	
 	<!--- now populate the collection with content --->
 	 <cfquery name="rs" datasource="#variables.configBean.getDatasource()#">
@@ -125,7 +128,7 @@
 	<cfset var language=getCollectionLanguage(arguments.siteID)>
 
 	<cfset deleteCollection(collectionName)>
-	<cfset createCollection(collection=collectionName, path="../collections",language=language)>
+	<cfset createCollection(collection=collectionName, language=language)>
 	   	
 	<cfindex collection="#collectionName#"  
 	action="update"  
@@ -252,7 +255,7 @@
 		<cfsearch 
 			name="rs" 
 			collection="#collectionName#" 
-			criteria="title:#arguments.keywords# OR custom1:#arguments.keywords# OR custom2:#arguments.keywords# OR body:#arguments.keywords#" 
+			criteria="#arguments.keywords#" 
 			language="#language#"
 			ContextHighlightBegin='<strong>'
 	    	ContextHighlightEnd="</strong>"
@@ -270,7 +273,6 @@
 
 <cffunction name="createCollection" ooutput="false">
 	<cfargument name="collection">
-	<cfargument name="path">
 	<cfargument name="language">
 	<!--- not implemented --->
 </cffunction>

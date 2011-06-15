@@ -23,8 +23,8 @@
 
 <cffunction name="createCollection" ooutput="false">
 	<cfargument name="collection">
-	<cfargument name="path">
 	<cfargument name="language">
-		<cfcollection action="create" collection="#arguments.collection#" path="#arguments.path#" language="#arguments.language#"/>
+
+	<cfcollection action="create" collection="#arguments.collection#" path="#variables.collectionDir#" language="#arguments.language#"/>
 </cffunction>
 </cfcomponent>
