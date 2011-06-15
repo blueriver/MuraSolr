@@ -19,6 +19,6 @@
 	 <cfset var rs="">
 	 <cfcollection action="list" name="rs"/>
 	 <cfreturn rs>
-</cffunction>
+</cffunction> 
 
 </cfcomponent>

@@ -19,6 +19,6 @@
 	 <cfset var rs="">
 	 <cfcollection action="list" name="rs" engine="solr"/>
 	 <cfreturn rs>
-</cffunction>
+</cffunction> 
 
 </cfcomponent>
