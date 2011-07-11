@@ -104,12 +104,12 @@
 		  and type in ('Page','Portal','Calenda','Gallery','File','Link')
 	  </cfquery>
 	  
-	  <cfif rs.recordcount>
-	  	<cfset querySetCell(rs,"body", stripMarkUp(rs.body))>
-	  	<cfset querySetCell(rs,"summary", stripMarkUp(rs.summary))>
+	 <cfloop query="rs">
+	  	<cfset querySetCell(rs,"body", stripMarkUp(rs.body), rs.currentRow)>
+	  	<cfset querySetCell(rs,"summary", stripMarkUp(rs.summary), rs.currentRow)>
 	  	
 	  	<cfindex action="update" collection="#getCollectionName(arguments.siteID,'db')#" key="contentID" type="custom" query="rs" title="title" custom1="summary" custom2="tags" body="body" language="#getCollectionLanguage(arguments.siteID)#"/>
-	  </cfif>
+	</cfloop>
 </cffunction>
 
 <cffunction name="deleteDBItem" output="false" returntype="void">
