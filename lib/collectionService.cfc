@@ -231,6 +231,23 @@
 	<cfreturn variables.collectionExtensions>
 </cffunction>
 
+<cffunction name="escapeKeywords" output="false">
+<cfargument name="keywords">
+
+	<cfset var matchList='\,+,-,&,|,!, (,),{,},[,],^,~,*,?,:,",;'>
+    <cfset var replaceList="">
+    <cfset var i="">
+	<cfset var returnString="">
+	
+    <cfloop list="#matchList#" index="i">
+		<cfset replaceList=listAppend(replaceList,"\" & i)>
+	</cfloop>
+	
+	<cfset returnString=replaceList(arguments.keywords, matchList, replaceList)>
+	<cfset returnString=replace(returnString," ","\ ","ALL")>
+	<cfreturn returnString>
+</cffunction>
+
 <cffunction name="search" output="false">
 <cfargument name="keywords">
 <cfargument name="type" default="file">
@@ -242,11 +259,13 @@
 	<cfif not collectionExists(collectionName)>
 		<cfset createCollection(collection=collectionName, path="../collections",language=language)>
 	</cfif>
+	
+	<!---<cftry>--->
 	<cfif arguments.type eq "file">
 		<cfsearch 
 			name="rs" 
 			collection="#collectionName#" 
-			criteria="#arguments.keywords#" 
+			criteria="#escapeKeywords(arguments.keywords)#" 
 			language="#language#"
 			ContextHighlightBegin='<strong>'
 	    	ContextHighlightEnd="</strong>"
@@ -257,7 +276,7 @@
 		<cfsearch 
 			name="rs" 
 			collection="#collectionName#" 
-			criteria="#arguments.keywords#" 
+			criteria="#escapeKeywords(arguments.keywords)#" 
 			language="#language#"
 			ContextHighlightBegin='<strong>'
 	    	ContextHighlightEnd="</strong>"
@@ -265,6 +284,12 @@
 	   		contextBytes="300">
 	
 	</cfif>
+	<!---<cfcatch>
+		<cfdump var="#escapeKeywords(arguments.keywords)#">
+		<cfdump var="#cfcatch#">
+		<cfabort>
+	</cfcatch>
+	</cftry>--->
 	 
 	 <cfreturn rs>
 </cffunction>
