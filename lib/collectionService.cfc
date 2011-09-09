@@ -234,7 +234,8 @@
 <cffunction name="escapeKeywords" output="false">
 <cfargument name="keywords">
 
-	<cfset var matchList='\,+,-,&,|,!, (,),{,},[,],^,~,*,?,:,",;'>
+	<!---<cfset var matchList='\,+,-,&,|,!, (,),{,},[,],^,~,*,?,:,",;'>--->
+	<cfset var matchList=':'>
     <cfset var replaceList="">
     <cfset var i="">
 	<cfset var returnString="">
@@ -244,7 +245,7 @@
 	</cfloop>
 	
 	<cfset returnString=replaceList(arguments.keywords, matchList, replaceList)>
-	<cfset returnString=replace(returnString," ","\ ","ALL")>
+	<!---<cfset returnString=replace(returnString," ","\ ","ALL")>--->
 	<cfreturn returnString>
 </cffunction>
 
