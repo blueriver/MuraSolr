@@ -141,7 +141,7 @@
 	</cfloop>
 	
 	<cfquery name="rs" dbtype="query">
-	select * from rs order by score, title
+	select * from rs order by score desc, title
 	</cfquery>
 
 	<cfreturn rs />
@@ -397,7 +397,7 @@
 	<cfquery name="rs" dbtype="query">
 		select *
 		from rs 
-		order by score, sortdate desc
+		order by score desc, sortdate desc
 	</cfquery>
 	
 	<cfreturn rs />
