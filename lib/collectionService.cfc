@@ -232,27 +232,46 @@
 </cffunction>
 
 <cffunction name="escapeKeywords" output="false">
-<cfargument name="keywords">
+	<cfargument name="keywords">
+	<cfargument name="matchList">
 
-	<!---<cfset var matchList='\,+,-,&,|,!, (,),{,},[,],^,~,*,?,:,",;'>--->
-	<cfset var matchList=':'>
     <cfset var replaceList="">
     <cfset var i="">
 	<cfset var returnString="">
 	
-    <cfloop list="#matchList#" index="i">
+    <cfloop list="#arguments.matchList#" index="i">
 		<cfset replaceList=listAppend(replaceList,"\" & i)>
 	</cfloop>
 	
-	<cfset returnString=replaceList(arguments.keywords, matchList, replaceList)>
-	<!---<cfset returnString=replace(returnString," ","\ ","ALL")>--->
+	<cfset returnString=replaceList(arguments.keywords, arguments.matchList, replaceList)>
+	
 	<cfreturn returnString>
 </cffunction>
 
 <cffunction name="search" output="false">
-<cfargument name="keywords">
-<cfargument name="type" default="file">
-<cfargument name="siteID">
+	<cfargument name="keywords">
+	<cfargument name="type" default="file">
+	<cfargument name="siteID">
+	
+	<cfset var rs="">
+	
+	<cftry>
+		<cfset arguments.keywords=escapeKeywords(arguments.keywords,':')>
+		<cfset rs=searchCollection(argumentCollection=arguments)>
+		<cfcatch>
+			<cfset arguments.keywords=escapeKeywords(arguments.keywords,'\,+,-,&,|,!, (,),{,},[,],^,~,*,?,:,",;')>
+			<cfset rs=searchCollection(argumentCollection=arguments)>
+		</cfcatch>
+	</cftry>
+	 
+	 <cfreturn rs>
+</cffunction>
+
+<cffunction name="searchCollection" output="false">
+	<cfargument name="keywords">
+	<cfargument name="type" default="file">
+	<cfargument name="siteID">
+	
 	<cfset var rs="">
 	<cfset var collectionName=getCollectionName(arguments.siteID,arguments.type)>
 	<cfset var language=getCollectionLanguage(arguments.siteID)>
@@ -261,12 +280,11 @@
 		<cfset createCollection(collection=collectionName, path="../collections",language=language)>
 	</cfif>
 	
-	<!---<cftry>--->
 	<cfif arguments.type eq "file">
 		<cfsearch 
 			name="rs" 
 			collection="#collectionName#" 
-			criteria="#escapeKeywords(arguments.keywords)#" 
+			criteria="#arguments.keywords#" 
 			language="#language#"
 			ContextHighlightBegin='<strong>'
 	    	ContextHighlightEnd="</strong>"
@@ -277,7 +295,7 @@
 		<cfsearch 
 			name="rs" 
 			collection="#collectionName#" 
-			criteria="#escapeKeywords(arguments.keywords)#" 
+			criteria="#arguments.keywords#" 
 			language="#language#"
 			ContextHighlightBegin='<strong>'
 	    	ContextHighlightEnd="</strong>"
@@ -285,14 +303,8 @@
 	   		contextBytes="300">
 	
 	</cfif>
-	<!---<cfcatch>
-		<cfdump var="#escapeKeywords(arguments.keywords)#">
-		<cfdump var="#cfcatch#">
-		<cfabort>
-	</cfcatch>
-	</cftry>--->
-	 
-	 <cfreturn rs>
+
+	<cfreturn rs>
 </cffunction>
 
 <cffunction name="getCollections" ooutput="false">
