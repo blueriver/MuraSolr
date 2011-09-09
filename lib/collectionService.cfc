@@ -256,10 +256,10 @@
 	<cfset var rs="">
 	
 	<cftry>
-		<cfset arguments.keywords=escapeKeywords(arguments.keywords,':')>
+		<cfset arguments.keywords=escapeKeywords(arguments.keywords,':,\,+,-,&,|,!, (,),{,},[,],^,~,*,?,:,;')>
 		<cfset rs=searchCollection(argumentCollection=arguments)>
 		<cfcatch>
-			<cfset arguments.keywords=escapeKeywords(arguments.keywords,'\,+,-,&,|,!, (,),{,},[,],^,~,*,?,:,",;')>
+			<cfset arguments.keywords=escapeKeywords(arguments.keywords,'"')>
 			<cfset rs=searchCollection(argumentCollection=arguments)>
 		</cfcatch>
 	</cftry>
