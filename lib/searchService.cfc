@@ -411,13 +411,21 @@
 <cfset var rsRaw="">
 
 <cfif len(arguments.keywords)>
-	<cfset var rsRaw=variables.collectionService.search(arguments.keywords,"db",arguments.siteID)>
+	<cfset rsRaw=variables.collectionService.search(arguments.keywords,"db",arguments.siteID)>
+	
+	<cfquery name="rsRaw" dbtype="query">
+		select * from rsRaw order by score desc
+	</cfquery>
 	
 	<cfloop query="rsRaw">
 		<cfset queryAddRow(rsResult,1)/>
 		<cfset querysetcell(rsResult,"contentID",rsRaw.key,rsRaw.currentRow)/>
 		<cfset querysetcell(rsResult,"score",rsRaw.score,rsRaw.currentRow)/>
 		<cfset querysetcell(rsResult,"context",rsRaw.context,rsRaw.currentRow)/>
+		
+		<cfif rsRaw.currentRow eq 2000>
+			<cfbreak>
+		</cfif>
 	</cfloop>
 </cfif>
 
@@ -432,11 +440,20 @@
 
 <cfif len(arguments.keywords)>
 	<cfset rsRaw=variables.collectionService.search(arguments.keywords,"file",arguments.siteID)>
+	
+	<cfquery name="rsRaw" dbtype="query">
+		select * from rsRaw order by score desc
+	</cfquery>
+	
 	<cfloop query="rsRaw">
 		<cfset queryAddRow(rsResult,1)/>
 		<cfset querysetcell(rsResult,"fileID",listLast(listFirst(rsRaw.url,"."),"/"),rsRaw.currentRow)/>
 		<cfset querysetcell(rsResult,"score",rsRaw.score,rsRaw.currentRow)/>
 		<cfset querysetcell(rsResult,"context",rsRaw.context,rsRaw.currentRow)/>
+		
+		<cfif rsRaw.currentRow eq 2000>
+			<cfbreak>
+		</cfif>
 	</cfloop>
 </cfif>
 
