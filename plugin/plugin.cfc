@@ -18,12 +18,13 @@
 <cffunction name="init" returntype="any" access="public" output="false">
 	<cfargument name="pluginConfig"  type="any" default="">
 	<cfset variables.pluginConfig = arguments.pluginConfig>
-	<cfset variables.locHash=hash("#application.configBean.getPluginDir()#/#variables.pluginConfig.getDirectory()#")>
+	<cfset variables.prefix=variables.pluginConfig.getSettings("prefix")>
 	<cfif application.configBean.getCompiler() eq "Adode">
 		<cfset variables.util=createObject("component","pluginUtilAdobe")>
 	<cfelse>
 		<cfset variables.util=createObject("component","pluginUtilDefault")>
 	</cfif>
+	<cfreturn this>
 </cffunction>
 
 <cffunction name="update" output="false">
@@ -48,12 +49,12 @@
 	<cfset var rs=variables.pluginConfig.getAssignedSites()>
 	<cfset var temp="">
 	
-	<cfloop query="rs">
-		<cfset deleteCollection(rs.siteID & "db" & variables.locHash)>
-		<cfset deleteCollection(rs.siteID & "file" & variables.locHash)>
-	</cfloop>
-	
 	<cfif directoryExists("#application.configBean.getPluginDir()#/#variables.pluginConfig.getDirectory()#/collections")>
+		<cfloop query="rs">
+			<cfset deleteCollection(variables.prefix & rs.siteID & "db")>
+			<cfset deleteCollection(variables.prefix & rs.siteID & "file")>
+		</cfloop>
+		
 		<cfdirectory action="list" directory="#application.configBean.getPluginDir()#/#variables.pluginConfig.getDirectory()#/collections" name="rs" type="Dir">
 		
 		<cfloop query="rs">

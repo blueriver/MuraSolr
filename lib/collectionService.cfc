@@ -17,7 +17,7 @@
 
 <cfset variables.pluginConfig="">
 <cfset variables.collectionDir="">
-<cfset variables.locHash="">
+<cfset variables.prefix="">
 <cfset variables.configBean = getBean("configBean") />
 <cfset variables.collectionExtensions="pdf,doc,odt,docx,xls,xlsx,txt">
 <cfset variables.assignedSites="">
@@ -25,12 +25,19 @@
 
 <cffunction name="init" output="false">
 <cfargument name="pluginConfig">
-	<cfset variables.locHash=hash("#variables.configBean.getPluginDir()#/#arguments.pluginConfig.getDirectory()#")>
 	<cfset variables.pluginConfig=arguments.pluginConfig>
+	<cfset variables.prefix=variables.pluginConfig.getSetting("namePrefix")>
+	
+	<!---<cfif not len(variables.prefix)>
+		<cfset variables.prefix=hash("#variables.configBean.getPluginDir()#/#arguments.pluginConfig.getDirectory()#")>
+	</cfif>--->
+	
 	<cfset variables.assignedSites=variables.pluginConfig.getAssignedSites()>
 	
-	<cfset variables.collectionDir="#variables.configBean.getPluginDir()#/#arguments.pluginConfig.getDirectory()#/collections">
-
+	<cfset variables.collectionDir=variables.pluginConfig.getSetting("collectionDir")>
+	<cfif not len(variables.collectionDir)>
+		<cfset variables.collectionDir="#variables.configBean.getPluginDir()#/#arguments.pluginConfig.getDirectory()#/collections">
+	</cfif>
 	<cfif not directoryExists(variables.collectionDir)>
    		<cfdirectory action="create" directory="#variables.collectionDir#">
 	</cfif>
@@ -44,7 +51,7 @@
 <cffunction name="getCollectionName" output="false">
 <cfargument name="siteID">
 <cfargument name="type">
-<cfreturn arguments.siteID & arguments.type & variables.locHash>
+<cfreturn variables.prefix & arguments.siteID & arguments.type>
 </cffunction>
 
 <cffunction name="getCollectionLanguage" output="false">
@@ -177,8 +184,8 @@
 
 <cffunction name="deleteSiteCollections" outout="false">
 <cfargument name="siteID">
-	<cfset deleteCollection(arguments.siteID & "db" & variables.locHash)>
-	<cfset deleteCollection(arguments.siteID & "file" & variables.locHash)>
+	<cfset deleteCollection(getCollectionName(arguments.siteID,"db"))>
+	<cfset deleteCollection(getCollectionName(arguments.siteID,"file"))>
 </cffunction>
 
 <cffunction name="createSiteCollections" output="false">

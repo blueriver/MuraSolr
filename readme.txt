@@ -1,1 +1,1 @@
-This plugin adds files to default Mura site search.
+This plugin adds files to default Mura site search using the built in CFML SOLR support.

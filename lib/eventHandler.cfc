@@ -43,6 +43,8 @@
 	<cfset contentGateway.injectMethod("getPrivateSearch#variables.pluginConfig.getPluginID()#",contentGateway.getPrivateSearch)>
 	<cfset contentGateway.injectMethod("getPrivateSearch",replacementPrivateSearchMethod)>
 	<cfset contentGateway.injectMethod("rsUseSolr",variables.rsAssigned)>
+	
+	<cfset $.getBean("fileManager").injectMethod("purgeDeleted",purgeDeletedFiles)>
 </cffunction>
 
 <cffunction name="onFileCache" output="false">
@@ -106,6 +108,36 @@
 	<cfelse>
 		<cfreturn evaluate("getPrivateSearch#pConfig.getPluginID()#(argumentCollection=arguments)")>
 	</cfif>
+</cffunction>
+
+<cffunction name="purgeDeletedFiles" output="false">
+	<cfargument name="siteid" default="">
+	<cfset var rs="">
+	<cfset var configBean=getBean("configBean")>
+	
+	<cfquery name="rs" datasource="#configBean.getReadOnlyDatasource()#"  username="#configBean.getReadOnlyDbUsername()#" password="#configBean.getReadOnlyDbPassword()#">
+		select fileID from tfiles where deleted=1 
+		<cfif len(arguments.siteID)>
+		and siteID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#">
+		</cfif>
+	</cfquery>
+		
+		<cfthread action="run" name="purgingDeletedFile#application.instanceID#thread" rs="#rs#">
+			<cflock type="exclusive" name="purgingDeletedFile#application.instanceID#" timeout="1000">
+				<cfloop query="rs">
+					<cfset deleteCachedFile(rs.fileID)>
+					<cfset sleep(1000)>
+				</cfloop>
+			</cflock>
+		</cfthread>
+		
+	<cfquery name="rs" datasource="#configBean.getDatasource()#"  username="#configBean.getDBUsername()#" password="#configBean.getDBPassword()#">
+		delete from tfiles where deleted=1
+		<cfif len(arguments.siteID)>
+		and siteID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#">
+		</cfif> 
+	</cfquery>
+
 </cffunction>
 
 </cfcomponent>
