@@ -18,7 +18,7 @@
 <cffunction name="init" returntype="any" access="public" output="false">
 	<cfargument name="pluginConfig"  type="any" default="">
 	<cfset variables.pluginConfig = arguments.pluginConfig>
-	<cfset variables.prefix=variables.pluginConfig.getSettings("prefix")>
+	<cfset variables.prefix=variables.pluginConfig.getSetting("namePrefix")>
 	<cfif application.configBean.getCompiler() eq "Adode">
 		<cfset variables.util=createObject("component","pluginUtilAdobe")>
 	<cfelse>
@@ -48,8 +48,9 @@
 <cfargument name="collectionName">
 	<cfset var rs=variables.pluginConfig.getAssignedSites()>
 	<cfset var temp="">
-	
+		
 	<cfif directoryExists("#application.configBean.getPluginDir()#/#variables.pluginConfig.getDirectory()#/collections")>
+		
 		<cfloop query="rs">
 			<cfset deleteCollection(variables.prefix & rs.siteID & "db")>
 			<cfset deleteCollection(variables.prefix & rs.siteID & "file")>
