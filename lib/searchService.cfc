@@ -118,8 +118,6 @@
 		tcontent.target,tcontent.targetParams,tcontent.islocked,tcontent.releaseDate,tfiles.fileSize,tfiles.fileExt, tcontent.nextn, tfiles.fileid
 	</cfquery> 
 	
-	<cfdump var="#rs#" abort="true">
-	
 	<cfloop query="rs">
 		<cfquery name="rsScore" dbtype="query">
 			select score,context from rsDbSearch
