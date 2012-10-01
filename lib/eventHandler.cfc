@@ -63,7 +63,7 @@
 <cffunction name="onAfterContentSave" output="false">
 <cfargument name="$">
 	<cfset var content=$.event("contentBean")>
-	<cfif content.getActive() and listFindNoCase("Page,Portal,Calender,Gallery,File,Link",content.getType()) >
+	<cfif content.getActive() and listFindNoCase("Page,Portal,Calendar,Gallery,File,Link",content.getType()) >
 		<cfset variables.collectionService.indexDBItem(content.getContentID(),content.getSiteID())>
 	</cfif>
 </cffunction>
@@ -71,7 +71,7 @@
 <cffunction name="onAfterContentDelete" output="false">
 <cfargument name="$">
 	<cfset var content=$.event("contentBean")>
-	<cfif listFindNoCase("Page,Portal,Calender,Gallery",content.getType()) >
+	<cfif listFindNoCase("Page,Portal,Calendar,Gallery",content.getType()) >
 		<cfset variables.collectionService.deleteDBItem(content.getContentID(),content.getSiteID())>
 	</cfif>
 </cffunction>
