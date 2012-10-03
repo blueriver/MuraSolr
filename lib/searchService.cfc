@@ -46,10 +46,11 @@
 	SELECT tcontent.ContentHistID, tcontent.ContentID, tcontent.Approved, tcontent.filename, tcontent.Active, tcontent.Type, tcontent.OrderNo, tcontent.ParentID, 
 	tcontent.Title, tcontent.menuTitle, tcontent.lastUpdate, tcontent.lastUpdateBy, tcontent.lastUpdateByID, tcontent.Display, tcontent.DisplayStart, 
 	tcontent.DisplayStop,  tcontent.isnav, tcontent.restricted, count(tcontent2.parentid) AS hasKids,tcontent.isfeature,tcontent.inheritObjects,tcontent.target,tcontent.targetParams,
-	tcontent.islocked,tcontent.releaseDate,tfiles.fileSize,tfiles.fileExt, 0 AS score, tcontent.nextn, tfiles.fileid
+	tcontent.islocked,tcontent.releaseDate,tfiles.fileSize,tfiles.fileExt, 0 AS score, tcontent.nextn, tfiles.fileid,tfiles.filename as AssocFilename,tcontentstats.lockID
 	FROM tcontent 
 	LEFT JOIN tcontent tcontent2 ON (tcontent.contentid=tcontent2.parentid)
-	
+	LEFT JOIN tcontentstats ON (tcontent.contentid=tcontentstats.contentid
+							and tcontent.siteID=tcontentstats.SiteID)
 	<cfif arguments.searchType eq "image">
 		Inner Join tfiles ON (tcontent.fileID=tfiles.fileID)
 	<cfelse>
@@ -90,7 +91,18 @@
 							<cfif rsFileSearch.recordcount>
 								tcontent.fileID in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsFileSearch.fileID)#" list="true">)
 							<cfelse>
-								tcontent.fileID in ('')
+								0=1
+							</cfif>
+
+							or 
+
+							<cfif rsFileSearch.recordcount>
+								tcontent.contenthistid in (
+										select baseID from tclassextenddata
+										where stringValue in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsFileSearch.fileID)#" list="true">)
+									)
+							<cfelse>
+								0=1
 							</cfif>
 							
 							or
@@ -98,7 +110,7 @@
 							<cfif rsDBSearch.recordcount>
 								tcontent.contentID in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsDBSearch.contentID)#" list="true">)
 							<cfelse>
-								tcontent.contentID in ('')
+								0=1
 							</cfif>
 							
 						<cfelse>
@@ -115,7 +127,7 @@
 		GROUP BY tcontent.ContentHistID, tcontent.ContentID, tcontent.Approved, tcontent.filename, tcontent.Active, tcontent.Type, tcontent.OrderNo, tcontent.ParentID, 
 		tcontent.Title, tcontent.menuTitle, tcontent.lastUpdate, tcontent.lastUpdateBy, tcontent.lastUpdateByID, tcontent.Display, tcontent.DisplayStart, 
 		tcontent.DisplayStop,  tcontent.isnav, tcontent.restricted,tcontent.isfeature,tcontent.inheritObjects,
-		tcontent.target,tcontent.targetParams,tcontent.islocked,tcontent.releaseDate,tfiles.fileSize,tfiles.fileExt, tcontent.nextn, tfiles.fileid
+		tcontent.target,tcontent.targetParams,tcontent.islocked,tcontent.releaseDate,tfiles.fileSize,tfiles.fileExt, tcontent.nextn, tfiles.fileid,tcontentstats.lockID
 	</cfquery> 
 	
 	<cfloop query="rs">
@@ -171,14 +183,14 @@
 	tcontent.remoteURL,tfiles.fileSize,tfiles.fileExt,tcontent.fileID,tcontent.audience,tcontent.keyPoints,
 	tcontentstats.rating,tcontentstats.totalVotes,tcontentstats.downVotes,tcontentstats.upVotes, 0 as kids, 
 	tparent.type parentType,tcontent.nextn,tcontent.path,tcontent.orderno,tcontent.lastupdate,tcontent.created,
-	tcontent.created sortdate, 0 score
+	tcontent.created sortdate, 0 score,tfiles.filename as AssocFilename,tcontentstats.lockID,tcontentstats.majorVersion,tcontentstats.minorVersion
 	from tcontent Left Join tfiles ON (tcontent.fileID=tfiles.fileID)
 	Left Join tcontent tparent on (tcontent.parentid=tparent.contentid
 						    			and tcontent.siteid=tparent.siteid
 						    			and tparent.active=1) 
-	Left Join tcontentstats on (tcontent.contentid=tcontentstats.contentid
-					    and tcontent.siteid=tcontentstats.siteid) 
-	
+	LEFT JOIN tcontentstats ON (tcontent.contentid=tcontentstats.contentid
+							and tcontent.siteID=tcontentstats.SiteID)
+
 	
 	
 	<cfif len(arguments.tag)>
@@ -223,18 +235,29 @@
 					<cfif rsDBSearch.recordcount or rsFileSearch.recordcount>
 						
 						<cfif rsFileSearch.recordcount>
-							tcontent.fileID in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsFileSearch.fileID)#" list="true">)
-						<cfelse>
-							tcontent.fileID in ('')
-						</cfif>
-						
-						or
-						
-						<cfif rsDBSearch.recordcount>
-							tcontent.contentID in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsDBSearch.contentID)#" list="true">)
-						<cfelse>
-							tcontent.contentID in ('')
-						</cfif>
+								tcontent.fileID in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsFileSearch.fileID)#" list="true">)
+							<cfelse>
+								0=1
+							</cfif>
+
+							or 
+
+							<cfif rsFileSearch.recordcount>
+								tcontent.contenthistid in (
+										select baseID from tclassextenddata
+										where stringValue in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsFileSearch.fileID)#" list="true">)
+									)
+							<cfelse>
+								0=1
+							</cfif>
+							
+							or
+							
+							<cfif rsDBSearch.recordcount>
+								tcontent.contentID in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsDBSearch.contentID)#" list="true">)
+							<cfelse>
+								0=1
+							</cfif>
 					
 					<cfelse>
 						0=1
@@ -274,14 +297,13 @@
 	tcontent.remoteURL,tfiles.fileSize,tfiles.fileExt,tcontent.fileID,tcontent.audience,tcontent.keyPoints,
 	tcontentstats.rating,tcontentstats.totalVotes,tcontentstats.downVotes,tcontentstats.upVotes, 0 as kids, 
 	tparent.type parentType,tcontent.nextn,tcontent.path,tcontent.orderno,tcontent.lastupdate,tcontent.created,
-	tcontent.releaseDate sortdate, 0 score
+	tcontent.releaseDate sortdate, 0 score,tfiles.filename as AssocFilename,tcontentstats.lockID,tcontentstats.majorVersion,tcontentstats.minorVersion
 	from tcontent Left Join tfiles ON (tcontent.fileID=tfiles.fileID)
 	Left Join tcontent tparent on (tcontent.parentid=tparent.contentid
 						    			and tcontent.siteid=tparent.siteid
 						    			and tparent.active=1) 
 	Left Join tcontentstats on (tcontent.contentid=tcontentstats.contentid
 					    and tcontent.siteid=tcontentstats.siteid) 
-	
 	
 	
 	<cfif len(arguments.tag)>
@@ -326,18 +348,29 @@
 					<cfif rsDBSearch.recordcount or rsFileSearch.recordcount>
 						
 						<cfif rsFileSearch.recordcount>
-							tcontent.fileID in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsFileSearch.fileID)#" list="true">)
-						<cfelse>
-							tcontent.fileID in ('')
-						</cfif>
-						
-						or
-						
-						<cfif rsDBSearch.recordcount>
-							tcontent.contentID in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsDBSearch.contentID)#" list="true">)
-						<cfelse>
-							tcontent.contentID in ('')
-						</cfif>
+								tcontent.fileID in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsFileSearch.fileID)#" list="true">)
+							<cfelse>
+								0=1
+							</cfif>
+
+							or 
+
+							<cfif rsFileSearch.recordcount>
+								tcontent.contenthistid in (
+										select baseID from tclassextenddata
+										where stringValue in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsFileSearch.fileID)#" list="true">)
+									)
+							<cfelse>
+								0=1
+							</cfif>
+							
+							or
+							
+							<cfif rsDBSearch.recordcount>
+								tcontent.contentID in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsDBSearch.contentID)#" list="true">)
+							<cfelse>
+								0=1
+							</cfif>
 					
 					<cfelse>
 						0=1
