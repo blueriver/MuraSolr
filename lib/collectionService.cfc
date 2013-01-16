@@ -82,7 +82,7 @@
 	      FROM tcontent
 	      WHERE 
 		  active = 1
-		  and type in ('Page','Portal','Calendar','Gallery','File','Link')
+		  and type in ('Page','Folder','Portal','Calendar','Gallery','File','Link')
 		  and siteID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#">
 	  </cfquery>
 	
@@ -110,7 +110,7 @@
 	      contentID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#">
 	      and siteID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#">
 		  and active = 1
-		  and type in ('Page','Portal','Calendar','Gallery','File','Link')
+		  and type in ('Page','Folder','Portal','Calendar','Gallery','File','Link')
 	  </cfquery>
 	  
 	  <cfif rs.recordcount>

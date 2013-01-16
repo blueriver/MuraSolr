@@ -74,7 +74,7 @@
 					AND
 					
 					
-					tcontent.type in ('Page','Portal','Calendar','File','Link','Gallery')
+					tcontent.type in ('Page','Folder','Portal','Calendar','File','Link','Gallery')
 						
 						<cfif len(arguments.sectionID)>
 							and tcontent.path like  <cfqueryparam cfsqltype="cf_sql_varchar" value="%#arguments.sectionID#%">	
@@ -219,7 +219,7 @@
 						
 						
 				AND
-				tcontent.type in ('Page','Portal','Calendar','File','Link')
+				tcontent.type in ('Page','Folder','Portal','Calendar','File','Link')
 				
 				AND tcontent.releaseDate is null
 				
@@ -332,7 +332,7 @@
 						
 						
 				AND
-				tcontent.type in ('Page','Portal','Calendar','File','Link')
+				tcontent.type in ('Page','Folder','Portal','Calendar','File','Link')
 				
 				AND tcontent.releaseDate is not null
 				
