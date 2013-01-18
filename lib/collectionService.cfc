@@ -78,7 +78,7 @@
 	<!--- now populate the collection with content --->
 	 <cfquery name="rs" datasource="#variables.configBean.getDatasource()#">
 	      SELECT 
-	          contentID,type,subtype,siteID,Title,Body,summary,tags,filename,credits  
+	          contentID,type,subtype,siteID,Title,Body,summary,tags,filename,credits,metadesc,metakeywords  
 	      FROM tcontent
 	      WHERE 
 		  active = 1
@@ -104,7 +104,7 @@
 	   	<!--- now populate the collection with content --->
 	  <cfquery name="rs" datasource="#variables.configBean.getDatasource()#">
 	      SELECT 
-	      	  contentID,type,subtype,siteID,Title,Body,summary,tags,filename,credits   
+	      	  contentID,type,subtype,siteID,Title,Body,summary,tags,filename,credits,metadesc,metakeywords   
 	      FROM tcontent
 	      WHERE 
 	      contentID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#">
