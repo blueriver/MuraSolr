@@ -18,6 +18,7 @@
 <cfset variables.pluginConfig="">
 <cfset variables.collectionDir="">
 <cfset variables.prefix="">
+<cfset variables.isHealthy=true>
 <cfset variables.configBean = getBean("configBean") />
 <cfset variables.collectionExtensions="pdf,doc,odt,docx,xls,xlsx,txt">
 <cfset variables.assignedSites="">
@@ -43,9 +44,19 @@
 	</cfif>
 	
 	<cfloop query="variables.assignedSites">
+		<cftry>
 		<cfset createSiteCollections(variables.assignedSites.siteID)>
+		<cfcatch>
+			<cflog text="Mura had an issue connecting to SOLR">
+			<cfset variables.isHealthy=false>
+		</cfcatch>
+		</cftry>
 	</cfloop>
 	<cfreturn this>
+</cffunction>
+
+<cffunction name="getIsHealthy" output="false">
+	<cfreturn variables.isHealthy>
 </cffunction>
 
 <cffunction name="getCollectionName" output="false">

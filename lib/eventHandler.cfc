@@ -29,8 +29,13 @@
 	<cfelse>
 		<cfset variables.collectionService=createObject("component","collectionServiceDefault").init(variables.pluginConfig)>
 	</cfif>
+
+	<cfif not variables.collectionService.getIsHealthy()>
+		<cfreturn false>
+	</cfif>
+
 	<cfset variables.searchService=createObject("component","searchService").init(variables.pluginConfig,variables.collectionService)>
-	
+
 	<cfloop query="rs">
 		<cfset variables.pluginConfig.addEventHandler(this,rs.siteid)>
 	</cfloop>
