@@ -292,7 +292,7 @@
 	<cfset var rs="">
 	<cfset var collectionName=getCollectionName(arguments.siteID,arguments.type)>
 	<cfset var language=getCollectionLanguage(arguments.siteID)>
-	<cfset var maxRows=300>
+	<cfset var maxRows=800>
 	
 	<cfif not collectionExists(collectionName)>
 		<cfset createCollection(collection=collectionName, path="../collections",language=language)>
