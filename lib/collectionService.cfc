@@ -293,6 +293,7 @@
 	<cfset var rs="">
 	<cfset var collectionName=getCollectionName(arguments.siteID,arguments.type)>
 	<cfset var language=getCollectionLanguage(arguments.siteID)>
+	<cfset var maxRows=300>
 	
 	<cfif not collectionExists(collectionName)>
 		<cfset createCollection(collection=collectionName, path="../collections",language=language)>
@@ -308,7 +309,7 @@
 	    	ContextHighlightEnd="</strong>"
 	   		ContextPassages="3"
 	   		contextBytes="300"
-	   		>
+	   		maxRows="#maxRows#">
 	<cfelse>
 		<cfsearch 
 			name="rs" 
@@ -318,7 +319,8 @@
 			ContextHighlightBegin='<strong>'
 	    	ContextHighlightEnd="</strong>"
 	   		ContextPassages="3"
-	   		contextBytes="300">
+	   		contextBytes="300"
+	   		maxRows="#maxRows#">
 	
 	</cfif>
 
