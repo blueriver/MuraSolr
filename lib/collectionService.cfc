@@ -22,7 +22,6 @@
 <cfset variables.configBean = getBean("configBean") />
 <cfset variables.collectionExtensions="pdf,doc,odt,docx,xls,xlsx,txt">
 <cfset variables.assignedSites="">
-<cfset variables.assignedSites="">
 
 <cffunction name="init" output="false">
 <cfargument name="pluginConfig">
