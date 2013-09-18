@@ -173,7 +173,7 @@
 	<cfset var rsDBSearch=searchDBCollection(arguments.keywords,arguments.siteID)>
 	<cfset var rsScore="">
 	
-	<cfquery name="rs" datasource="#variables.configBean.getDatasource()#" username="#variables.configBean.getDBUsername()#" password="#variables.configBean.getDBPassword()#">
+	<cfquery name="rs" maxRows="500" datasource="#variables.configBean.getDatasource()#" username="#variables.configBean.getDBUsername()#" password="#variables.configBean.getDBPassword()#">
 	<!--- Find direct matches with no releasedate --->
 	
 	select tcontent.contentid,tcontent.contenthistid,tcontent.siteid,tcontent.title,tcontent.menutitle,tcontent.targetParams,tcontent.filename,tcontent.summary,tcontent.tags,
