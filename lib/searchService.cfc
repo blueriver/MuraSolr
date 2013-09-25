@@ -456,7 +456,7 @@
 		<cfset querysetcell(rsResult,"score",rsRaw.score,rsRaw.currentRow)/>
 		<cfset querysetcell(rsResult,"context",rsRaw.context,rsRaw.currentRow)/>
 		
-		<cfif rsRaw.currentRow eq 800>
+		<cfif rsRaw.currentRow eq 400>
 			<cfbreak>
 		</cfif>
 	</cfloop>
@@ -484,7 +484,7 @@
 		<cfset querysetcell(rsResult,"score",rsRaw.score,rsRaw.currentRow)/>
 		<cfset querysetcell(rsResult,"context",rsRaw.context,rsRaw.currentRow)/>
 		
-		<cfif rsRaw.currentRow eq 800>
+		<cfif rsRaw.currentRow eq 400>
 			<cfbreak>
 		</cfif>
 	</cfloop>
