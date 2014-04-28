@@ -137,7 +137,7 @@
 		</cfquery>
 		
 		<cfif rsScore.recordcount>
-			<cfset querySetCell(rs,"score",rsScore.score,rs.currentRow)>		
+			<cfset querySetCell(rs,"score",(rsScore.score * 1000),rs.currentRow)>		
 		</cfif>
 		
 		<cfif len(rs.fileID)>
@@ -147,7 +147,7 @@
 			</cfquery>
 			
 			<cfif rsScore.recordcount>
-				<cfset querySetCell(rs,"score",rsScore.score,rs.currentRow)>
+				<cfset querySetCell(rs,"score",(rsScore.score * 1000),rs.currentRow)>
 			</cfif>
 		</cfif>
 	</cfloop>
@@ -406,7 +406,7 @@
 		</cfquery>
 		
 		<cfif rsScore.recordcount>
-			<cfset querySetCell(rs,"score",rsScore.score,rs.currentRow)>
+			<cfset querySetCell(rs,"score",(rsScore.score * 1000),rs.currentRow)>
 			<cfif len(trim(rsScore.context))>
 				<cfset querySetCell(rs,"summary","<p>" & rsScore.context & "</p>",rs.currentRow)>
 			</cfif>
@@ -419,7 +419,7 @@
 			</cfquery>
 			
 			<cfif rsScore.recordcount>
-				<cfset querySetCell(rs,"score",rsScore.score,rs.currentRow)>
+				<cfset querySetCell(rs,"score",(rsScore.score * 1000),rs.currentRow)>
 				<cfif len(trim(rsScore.context))>
 					<cfset querySetCell(rs,"summary","<p>" & rsScore.context & "</p>",rs.currentRow)>
 				</cfif>
