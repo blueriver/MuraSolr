@@ -480,7 +480,7 @@
 	
 	<cfloop query="rsRaw">
 		<cfset queryAddRow(rsResult,1)/>
-		<cfset querysetcell(rsResult,"fileID",listLast(listFirst(rsRaw.url,"."),"/"),rsRaw.currentRow)/>
+		<cfset querysetcell(rsResult,"fileID",listLast(listFirst(rsRaw.url,"."),"\/"),rsRaw.currentRow)/>
 		<cfset querysetcell(rsResult,"score",rsRaw.score,rsRaw.currentRow)/>
 		<cfset querysetcell(rsResult,"context",rsRaw.context,rsRaw.currentRow)/>
 		
