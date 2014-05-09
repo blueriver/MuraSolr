@@ -99,7 +99,7 @@
 	<cfif rs.recordcount>
 		<cfloop query="rs">
 	  		<cfset querySetCell(rs,"body", stripMarkUp(rs.body), rs.currentrow)>
-		  	<cfset querySetCell(rs,"summary", stripMarkUp(rs.title) & " " & stripMarkUp(rs.summary))>
+		  	<cfset querySetCell(rs,"summary", stripMarkUp(rs.title) & " " & stripMarkUp(rs.summary), rs.currentrow)>
 		</cfloop>
 		
 	  	<cfindex action="update" collection="#getCollectionName(arguments.siteID,'db')#" key="contentID" type="custom" query="rs" title="title" custom1="summary" custom2="tags" body="body" language="#getCollectionLanguage(arguments.siteID)#"/>
