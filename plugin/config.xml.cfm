@@ -49,6 +49,19 @@
 		<optionlist></optionlist>
 		<optionlabellist></optionlabellist>
 	</setting>
+	<setting>
+		<name>createDir</name>
+		<label>Auto Create Collection Directory</label>
+		<hint>This tells Mura to create the collection directory if it does on already exist.</hint>
+		<type>select</type>
+		<required>false</required>
+		<validation></validation>
+		<regex></regex>
+		<message></message>
+		<defaultvalue>true</defaultvalue>
+		<optionlist>true^false</optionlist>
+		<optionlabellist></optionlabellist>
+	</setting>
 </settings>
 <eventHandlers>
 	<eventHandler event="onApplicationLoad" component="lib.eventHandler" persist="false"/>

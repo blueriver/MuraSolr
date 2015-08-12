@@ -22,11 +22,16 @@
 <cfset variables.configBean = getBean("configBean") />
 <cfset variables.collectionExtensions="pdf,doc,odt,docx,xls,xlsx,txt">
 <cfset variables.assignedSites="">
+<cfset variables.createDir=true>
 
 <cffunction name="init" output="false">
 <cfargument name="pluginConfig">
 	<cfset variables.pluginConfig=arguments.pluginConfig>
 	<cfset variables.prefix=variables.pluginConfig.getSetting("namePrefix")>
+	
+	<cfif isBoolean(variables.pluginConfig.getSetting("createDir"))>
+		<cfset variables.createDir=variables.pluginConfig.getSetting("createDir")>
+	</cfif>
 	
 	<!---<cfif not len(variables.prefix)>
 		<cfset variables.prefix=hash("#variables.configBean.getPluginDir()#/#arguments.pluginConfig.getDirectory()#")>
@@ -38,7 +43,7 @@
 	<cfif not len(variables.collectionDir)>
 		<cfset variables.collectionDir="#variables.configBean.getPluginDir()#/#arguments.pluginConfig.getDirectory()#/collections">
 	</cfif>
-	<cfif not directoryExists(variables.collectionDir)>
+	<cfif createDir and not directoryExists(variables.collectionDir)>
    		<cfdirectory action="create" directory="#variables.collectionDir#">
 	</cfif>
 	
@@ -102,7 +107,7 @@
 		  	<cfset querySetCell(rs,"summary", stripMarkUp(rs.title) & " " & stripMarkUp(rs.summary), rs.currentrow)>
 		</cfloop>
 		
-	  	<cfindex action="update" collection="#getCollectionName(arguments.siteID,'db')#" key="contentID" type="custom" query="rs" title="title" custom1="summary" custom2="tags" body="body" language="#getCollectionLanguage(arguments.siteID)#"/>
+	  	<cfindex action="update" collection="#getCollectionName(arguments.siteID,'db')#" key="contentID" type="custom" query="rs" title="title" custom1="summary" custom2="tags"  custom3="metakeywords" body="body" language="#getCollectionLanguage(arguments.siteID)#"/>
 	</cfif>
 
 </cffunction>
@@ -298,6 +303,8 @@
 		<cfset createCollection(collection=collectionName, path="../collections",language=language)>
 	</cfif>
 	
+	<cfset arguments.keywords = REReplace(arguments.keywords,"[#chr(40)##chr(41)#]"," ","all")>
+
 	<cfif arguments.type eq "file">
 		<cfsearch 
 			name="rs" 
@@ -340,7 +347,7 @@
 	<cfargument name="str" type="string">	
 	<cfset var body=ReReplace(arguments.str, "<[^>]*>","","all")>
 	<cfset var errorStr="">
-	<cfset var regex1="(\[sava\]|\[mura\]).+?(\[/sava\]|\[/mura\])">
+	<cfset var regex1="(\[sava\]|\[mura\]|\[m\]).+?(\[/sava\]|\[/mura\]|\[/m\])">
 	<cfset var regex2="">
 	<cfset var finder=reFindNoCase(regex1,body,1,"true")>
 
