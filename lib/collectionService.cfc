@@ -107,7 +107,7 @@
 		  	<cfset querySetCell(rs,"summary", stripMarkUp(rs.title) & " " & stripMarkUp(rs.summary), rs.currentrow)>
 		</cfloop>
 		
-	  	<cfindex action="update" collection="#getCollectionName(arguments.siteID,'db')#" key="contentID" type="custom" query="rs" title="title" custom1="summary" custom2="tags"  custom3="metakeywords" body="body" language="#getCollectionLanguage(arguments.siteID)#"/>
+	  	<cfindex action="update" collection="#getCollectionName(arguments.siteID,'db')#" key="contentID" type="custom" query="rs" title="title" custom1="summary" custom2="tags" custom3="metakeywords" custom4="siteid" body="body" language="#getCollectionLanguage(arguments.siteID)#"/>
 	</cfif>
 
 </cffunction>
@@ -132,7 +132,7 @@
 	  	<cfset querySetCell(rs,"body", stripMarkUp(rs.body))>
 	  	<cfset querySetCell(rs,"summary", stripMarkUp(rs.title) & " " & stripMarkUp(rs.summary))>
 	  	
-	  	<cfindex action="update" collection="#getCollectionName(arguments.siteID,'db')#" key="contentID" type="custom" query="rs" title="title" custom1="summary" custom2="tags" body="body" language="#getCollectionLanguage(arguments.siteID)#"/>
+	  	<cfindex action="update" collection="#getCollectionName(arguments.siteID,'db')#" key="contentID" type="custom" query="rs" title="title" custom1="summary" custom2="tags" custom3="metakeywords" custom4="siteid" body="body" language="#getCollectionLanguage(arguments.siteID)#"/>
 	  </cfif>
 </cffunction>
 
