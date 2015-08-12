@@ -89,7 +89,7 @@
 						<cfif rsDBSearch.recordcount or rsFileSearch.recordcount>
 						
 							<cfif rsFileSearch.recordcount>
-								tcontent.fileID in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsFileSearch.fileID)#" list="true">)
+								tcontent.fileID in (#QuotedvalueList(rsFileSearch.fileID)#)
 							<cfelse>
 								0=1
 							</cfif>
@@ -99,7 +99,7 @@
 							<cfif rsFileSearch.recordcount>
 								tcontent.contenthistid in (
 										select baseID from tclassextenddata
-										where stringValue in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsFileSearch.fileID)#" list="true">)
+										where stringValue in (#QuotedvalueList(rsFileSearch.fileID)#)
 									)
 							<cfelse>
 								0=1
@@ -108,7 +108,7 @@
 							or
 							
 							<cfif rsDBSearch.recordcount>
-								tcontent.contentID in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsDBSearch.contentID)#" list="true">)
+								tcontent.contentID in (#QuotedvalueList(rsDBSearch.contentID)#)
 							<cfelse>
 								0=1
 							</cfif>
@@ -235,7 +235,7 @@
 					<cfif rsDBSearch.recordcount or rsFileSearch.recordcount>
 						
 						<cfif rsFileSearch.recordcount>
-								tcontent.fileID in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsFileSearch.fileID)#" list="true">)
+								tcontent.fileID in (#QuotedvalueList(rsFileSearch.fileID)#)
 							<cfelse>
 								0=1
 							</cfif>
@@ -245,7 +245,7 @@
 							<cfif rsFileSearch.recordcount>
 								tcontent.contenthistid in (
 										select baseID from tclassextenddata
-										where stringValue in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsFileSearch.fileID)#" list="true">)
+										where stringValue in (#QuotedvalueList(rsFileSearch.fileID)#)
 									)
 							<cfelse>
 								0=1
@@ -254,7 +254,7 @@
 							or
 							
 							<cfif rsDBSearch.recordcount>
-								tcontent.contentID in (<cfqueryparam cfsqltype="cf_sql_varchar" value="#valueList(rsDBSearch.contentID)#" list="true">)
+								tcontent.contentID in (#QuotedvalueList(rsDBSearch.contentID)#)
 							<cfelse>
 								0=1
 							</cfif>
