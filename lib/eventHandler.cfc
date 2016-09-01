@@ -62,7 +62,7 @@
 <cffunction name="onFileCacheDelete" output="false">
 <cfargument name="$">
 	<cfset var rsfile=$.event("rsfile")>
-	<cfset variables.collectionService.indexFileItem(rsfile.fileID,rsfile.fileExt,rsfile.siteid)>
+	<cfset variables.collectionService.deleteFileItem(rsfile.fileID,rsfile.fileExt,rsfile.siteid)>
 </cffunction>
 
 <cffunction name="onAfterContentSave" output="false">
