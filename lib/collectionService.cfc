@@ -124,7 +124,7 @@
 	   	<!--- now populate the collection with content --->
 	  <cfquery name="rs" datasource="#variables.configBean.getDatasource()#">
 	      SELECT
-	      	  contentID,type,subtype,siteID,Title,Body,summary,tags,filename,credits,metadesc,metakeywords
+	      	  contentID,type,subtype,siteID,Title,Body,summary,tags,filename,credits,metadesc,metakeywords, fileId, contentHistId
 	      FROM tcontent
 	      WHERE
 	      contentID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#">
@@ -143,9 +143,66 @@
 				<cfset querySetCell(rs, "summary", stripMarkUp(rs.title) & Chr(13) & Chr(10) & stripMarkUp(rs.summary))>
 			</cfif>
 
-			<cfindex action="update" collection="#getCollectionName(arguments.siteID,'db')#" key="contentID" type="custom" query="rs" title="title" custom1="summary" custom2="tags" body="body" language="#getCollectionLanguage(arguments.siteID)#"/>
+			<!--- Add the categories too! --->
+
+			<cfset var categories = getCategoryListForContentItem(contentId, siteID, contentHistId)>
+
+			<cfindex action="update" collection="#getCollectionName(arguments.siteID,'db')#" key="contentID" type="custom" query="rs" title="title" custom1="summary" custom2="tags" body="body" language="#getCollectionLanguage(arguments.siteID)#" category="#categories#"/>
+
+			<!--- Also need to do this for the file item attached! --->
+
+			<cfif type EQ "File">
+
+					<cfset fileItem = getFileItem(rs.contentID, rs.siteId, rs.fileId)>
+					<cfset indexFileItem(fileItem.fileid, fileItem.fileExt, rs.siteId, categories)>
+
+			</cfif>
+
+			
+
 		</cfif>
 </cffunction>
+
+
+<cffunction name="getCategoryListForContentItem" output="false" returntype="string">
+	<cfargument name="contentID">
+	<cfargument name="siteID">
+	<cfargument name="contentHistID">
+		  <cfset var rs="">
+		   	<!--- now populate the collection with content --->
+		  <cfquery name="rs" datasource="#variables.configBean.getDatasource()#">
+		     SELECT Distinct(categoryId)
+			FROM tcontentcategoryassign cat
+			WHERE  contentID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#">
+			and siteID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#">
+			and contentHistId = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentHistID#">
+		</cfquery>
+
+		<cfreturn valueList(rs.categoryId)>
+</cffunction>
+
+<cffunction name="getFileItem" output="false" returntype="query">
+	<cfargument name="contentID">
+	<cfargument name="siteID">
+	<cfargument name="fileId">
+		  <cfset var rs="">
+		   	<!--- get the file item. We only want the extension really --->
+		  <cfquery name="rs" datasource="#variables.configBean.getDatasource()#" maxrows="1">
+		 	SELECT *
+			FROM tfiles
+			WHERE  contentID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#">
+			and siteID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#">
+			and fileID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.fileId#">
+			
+			and deleted = 0
+
+			
+		</cfquery>
+
+		<cfreturn rs>
+</cffunction>
+
+
 
 <cffunction name="deleteDBItem" output="false" returntype="void">
 <cfargument name="contentID">
@@ -165,6 +222,8 @@
 	<cfset deleteCollection(collectionName)>
 	<cfset createCollection(collection=collectionName, language=language)>
 
+
+	<!--- Would have to go through all the items now --->
 	<cfindex collection="#collectionName#"
 	action="update"
 	type="path"
@@ -178,14 +237,21 @@
  <cfargument name="fileID">
  <cfargument name="fileExt">
  <cfargument name="siteID">
+ <cfargument name="categories" default="">
+
+ 	
 
 	<cfif listfindnocase(variables.collectionExtensions,arguments.fileExt)>
 		<cfindex collection="#getCollectionName(arguments.siteID,'file')#"
 		action="update"
 		type="file"
 		key="#variables.configBean.getFileDir()#/#arguments.siteID#/cache/file/#arguments.fileID#.#arguments.fileEXT#"
-		language="#getCollectionLanguage(arguments.siteID)#">
+		language="#getCollectionLanguage(arguments.siteID)#"
+		category="#arguments.categories#"
+		>
 	</cfif>
+
+	
 </cffunction>
 
 <cffunction name="deleteFileItem" output="false" returntype="void">
@@ -304,6 +370,7 @@
 	<cfargument name="keywords">
 	<cfargument name="type" default="file">
 	<cfargument name="siteID">
+	<cfargument name="categories" default="">
 
 	<cfset var rs="">
 	<cfset var collectionName=getCollectionName(arguments.siteID,arguments.type)>
@@ -326,6 +393,7 @@
 	    	ContextHighlightEnd="</strong>"
 	   		ContextPassages="3"
 	   		contextBytes="300"
+	   		category="#arguments.categories#"
 	   		maxRows="#maxRows#">
 	<cfelse>
 		<cfsearch
@@ -337,6 +405,7 @@
 	    	ContextHighlightEnd="</strong>"
 	   		ContextPassages="3"
 	   		contextBytes="300"
+	   		category="#arguments.categories#"
 	   		maxRows="#maxRows#">
 
 	</cfif>
