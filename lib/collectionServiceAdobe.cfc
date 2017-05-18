@@ -15,15 +15,15 @@
 --->
 <cfcomponent output="false" extends="collectionService">
 
-<cffunction name="getCollections" ooutput="false">
+<cffunction name="getCollections" output="false">
 	 <cfset var rs="">
 	 <cfcollection action="list" name="rs" engine="solr"/>
 	 <cfreturn rs>
 </cffunction>
 
-<cffunction name="createCollection" ooutput="false">
+<cffunction name="createCollection" output="false">
 	<cfargument name="collection">
-	<cfargument name="language">	
+	<cfargument name="language">
 	<cfcollection action="create" engine="solr" collection="#arguments.collection#" path="#variables.collectionDir#" language="#arguments.language#"/>
 </cffunction>
 </cfcomponent>
