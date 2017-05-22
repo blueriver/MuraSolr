@@ -145,7 +145,7 @@
 
 			<!--- Add the categories too! --->
 
-			<cfset var categories = getCategoryListForContentItem(contentId, siteID, contentHistId)>
+			<cfset var categories = getCategoryListForContentItem(rs.contentId, rs.siteID, rs.contentHistId)>
 
 			<cfindex action="update" collection="#getCollectionName(arguments.siteID,'db')#" key="contentID" type="custom" query="rs" title="title" custom1="summary" custom2="tags" body="body" language="#getCollectionLanguage(arguments.siteID)#" category="#categories#"/>
 
@@ -156,7 +156,7 @@
 					<cfset indexFileItem(fileItem.fileid, fileItem.fileExt, rs.siteId, categories)>
 			</cfif>
 
-			
+
 
 		</cfif>
 </cffunction>
@@ -191,10 +191,10 @@
 			WHERE  contentID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#">
 			and siteID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.siteID#">
 			and fileID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.fileId#">
-			
+
 			and deleted = 0
 
-			
+
 		</cfquery>
 
 		<cfreturn rs>
@@ -237,7 +237,7 @@
  <cfargument name="siteID">
  <cfargument name="categories" default="">
 
- 	
+
 
 	<cfif listfindnocase(variables.collectionExtensions,arguments.fileExt)>
 		<cfindex collection="#getCollectionName(arguments.siteID,'file')#"
@@ -249,7 +249,7 @@
 		>
 	</cfif>
 
-	
+
 </cffunction>
 
 <cffunction name="deleteFileItem" output="false" returntype="void">
