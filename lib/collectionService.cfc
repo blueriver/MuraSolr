@@ -124,7 +124,7 @@
 	   	<!--- now populate the collection with content --->
 	  <cfquery name="rs" datasource="#variables.configBean.getDatasource()#">
 	      SELECT
-	      	  contentID,type,subtype,siteID,Title,Body,summary,tags,filename,credits,metadesc,metakeywords, fileId, contentHistId
+	      	  contentID,type,subtype,siteID,Title,Body,summary,tags,filename,credits,metadesc,metakeywords,fileId,contentHistId
 	      FROM tcontent
 	      WHERE
 	      contentID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.contentID#">
@@ -152,10 +152,8 @@
 			<!--- Also need to do this for the file item attached! --->
 
 			<cfif rs.type EQ "File">
-
 					<cfset fileItem = getFileItem(rs.contentID, rs.siteId, rs.fileId)>
 					<cfset indexFileItem(fileItem.fileid, fileItem.fileExt, rs.siteId, categories)>
-
 			</cfif>
 
 
